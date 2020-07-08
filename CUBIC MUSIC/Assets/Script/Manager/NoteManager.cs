@@ -9,10 +9,13 @@ public class NoteManager : MonoBehaviour
     [SerializeField] Transform tfNoteappear = null;
     TimingManager theTimingmanager;
     EffectManager theEffectManager;
+    ComboManager theComboManager;
     private void Start()
     {
         theTimingmanager = GetComponent<TimingManager>();
         theEffectManager = FindObjectOfType<EffectManager>();
+        theComboManager = FindObjectOfType<ComboManager>();
+
     }
     // Update is called once per frame
     void Update()
@@ -40,7 +43,9 @@ public class NoteManager : MonoBehaviour
         {
             if (collision.GetComponent<Note>().GetNoteFlag()) 
             {
+                // 노트가 맨끝까지 가서 미스 되는경우
                 theEffectManager.JudgementEffect(4);
+                theComboManager.resetCombo();
             }
             theTimingmanager.boxNotelist.Remove(collision.gameObject);
 
