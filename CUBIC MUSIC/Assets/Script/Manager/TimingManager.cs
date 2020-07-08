@@ -10,10 +10,12 @@ public class TimingManager : MonoBehaviour
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
     EffectManager theEffect;
+    ScoreManager theScoreManager;
     // Start is called before the first frame update
     void Start()
     {
         theEffect = FindObjectOfType<EffectManager>();
+        theScoreManager = FindObjectOfType<ScoreManager>();
         timingBoxs = new Vector2[timingRect.Length];
         for (int i = 0; i < timingRect.Length; i++)
         {
@@ -38,11 +40,17 @@ public class TimingManager : MonoBehaviour
                     else if (x == 2) result = "Good";
                     else result = "Bad";
                     Debug.Log(string.Format("Hit {0}",result));
+
+                    //노트 제거
+                    boxNotelist[i].GetComponent<Note>().HideNote();
+                    boxNotelist.RemoveAt(i);
+
                     if(x < timingBoxs.Length - 1)
                         theEffect.NoteHitEffect();// 애니메이션 재생
                     theEffect.JudgementEffect(x);
-                    boxNotelist[i].GetComponent<Note>().HideNote();
-                    boxNotelist.RemoveAt(i);
+
+                    //점수 증가
+                    theScoreManager.IncreaseScore(x);
                     return;
                 }
             }
@@ -50,9 +58,5 @@ public class TimingManager : MonoBehaviour
         theEffect.JudgementEffect(timingBoxs.Length);
 
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
 }

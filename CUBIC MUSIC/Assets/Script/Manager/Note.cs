@@ -7,9 +7,11 @@ public class Note : MonoBehaviour
 {
     public float noteSpeed = 400;
     Image noteImage;
-    private void Start()
+    private void OnEnable()
     {
-        noteImage = GetComponent<Image>();
+        if(noteImage == null)
+            noteImage = GetComponent<Image>();
+        noteImage.enabled = true;
     }
     // Update is called once per frame
     void Update()
