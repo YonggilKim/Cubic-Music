@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -22,8 +23,10 @@ public class PlayerController : MonoBehaviour
     bool canMove = true;
 
     TimingManager theTimingManager;
+    CameraController theCam;
     private void Start()
     {
+        theCam = FindObjectOfType<CameraController>();
         theTimingManager = FindObjectOfType<TimingManager>();
     }
     // Update is called once per frame
@@ -60,11 +63,12 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(MoveCo());
         StartCoroutine(Spin());
         StartCoroutine(RecoilCo());
+        StartCoroutine(theCam.ZoomCam());
 
     }
 
     IEnumerator MoveCo()
-    {
+    { 
         //Vector3.Distance(transform.position, destPos) != 0
         canMove = false;
         while (Vector3.SqrMagnitude(transform.position - destPos) >= 0.001f)
