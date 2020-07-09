@@ -12,12 +12,16 @@ public class TimingManager : MonoBehaviour
     EffectManager theEffect;
     ScoreManager theScoreManager;
     ComboManager theComboManager;
+    StageManager theStageManager;
+    PlayerController theplayerController;
     // Start is called before the first frame update
     void Start()
     {
         theEffect = FindObjectOfType<EffectManager>();
         theScoreManager = FindObjectOfType<ScoreManager>();
         theComboManager = FindObjectOfType<ComboManager>();
+        theStageManager = FindObjectOfType<StageManager>();
+        theplayerController = FindObjectOfType<PlayerController>();
 
         timingBoxs = new Vector2[timingRect.Length];
         for (int i = 0; i < timingRect.Length; i++)
@@ -50,10 +54,18 @@ public class TimingManager : MonoBehaviour
 
                     if(x < timingBoxs.Length - 1)
                         theEffect.NoteHitEffect();// 애니메이션 재생
-                    theEffect.JudgementEffect(x);
 
-                    //점수 증가
-                    theScoreManager.IncreaseScore(x);
+                    if (CheckCannextPlate())
+                    {
+                        //점수 증가
+                        theScoreManager.IncreaseScore(x);
+                        theEffect.JudgementEffect(x);
+                        theStageManager.ShowNextPlate();
+                    }
+                    else 
+                    {
+                        theEffect.JudgementEffect(5);
+                    }
                     return true;
                 }
             }
@@ -62,5 +74,20 @@ public class TimingManager : MonoBehaviour
         theEffect.JudgementEffect(timingBoxs.Length);
         return false;
     }
-  
+    bool CheckCannextPlate()
+    {
+        if (Physics.Raycast(theplayerController.destPos, Vector3.down, out RaycastHit t_hitinfo, 1.1f))
+        {
+            if (t_hitinfo.transform.CompareTag("BasicPlate"))
+            {
+                BasicPlate t_plate = t_hitinfo.transform.GetComponent<BasicPlate>();
+                if (t_plate.flag)
+                {
+                    t_plate.flag = false;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
+    //이동
     [SerializeField] float moveSpeed = 3;
     Vector3 dir = new Vector3();
-    Vector3 destPos = new Vector3();
+    public Vector3 destPos = new Vector3();
 
     [SerializeField] float SpinSpeed = 270;
     Vector3 rotDir = new Vector3();
@@ -35,7 +35,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
         {
             if (canMove)
-            { 
+            {
+                Calc();
+
                 //판정체크
                 if (theTimingManager.CheckTiming())
                 {
@@ -49,17 +51,21 @@ public class PlayerController : MonoBehaviour
         //이동 목표값
     }
 
-    void StartAction()
+    void Calc()
     {
         //방향
         dir.Set(Input.GetAxisRaw("Vertical"), 0, Input.GetAxisRaw("Horizontal"));
-
+        //이동목표값 계산
         destPos = transform.position + new Vector3(-dir.x, 0, dir.z);
 
         //회전 목표값 계산
         rotDir = new Vector3(-dir.z, 0, -dir.x);
         fakeCube.RotateAround(transform.position, rotDir, SpinSpeed);
         destRot = fakeCube.rotation;
+
+    }
+    void StartAction()
+    {
         StartCoroutine(MoveCo());
         StartCoroutine(Spin());
         StartCoroutine(RecoilCo());
@@ -79,6 +85,7 @@ public class PlayerController : MonoBehaviour
         transform.position = destPos;
         canMove = true;
     }
+
 
     IEnumerator Spin()
     {
